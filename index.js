@@ -6,6 +6,22 @@ var http = require('http'),
 //
 var proxy = httpProxy.createProxyServer();
 
+
+function parsePost(req, res) {
+
+    console.log('POST');
+    var body = '';
+
+    req.on('data', function (data) {
+        body += data;
+    });
+    req.on('end', function () {
+        console.log('Body: ' + body);
+    });
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end('post received');
+};
+
 //
 // Create your server that make an operation that take a while
 // and then proxy de request
@@ -13,24 +29,15 @@ var proxy = httpProxy.createProxyServer();
 http.createServer(function (req, res) {
   // This simulate an operation that take 500ms in execute
   if (req.method == 'POST') {
-        console.log('POST');
-        var body = '';
-
-        req.on('data', function (data) {
-            body += data;
-        });
-        req.on('end', function () {
-            console.log('Body: ' + body);
-        });
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end('post received');
-}
+        parsePost(req, res);
+    }
   setTimeout(function () {
     proxy.web(req, res, {
       target: 'http://localhost:9008'
     });
   }, 1500);
 }).listen(8008);
+
 
 //
 // Create your target server
