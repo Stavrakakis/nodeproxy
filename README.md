@@ -1,6 +1,11 @@
 nodeproxy
 =========
 
+```
+npm install
+node index.js
+```
+
 This can be tested with the following curl request:
 
 ```
